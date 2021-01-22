@@ -1,0 +1,30 @@
+{
+  "name": "async-ctrl",
+  "version": "1.0.0",
+  "description": "Controller of consecutive or concurrent execution of a sequence of asynchronous operations",
+  "main": "./umd/async-ctrl.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "node ./test/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wwtchrsin/AsyncCtrl.git"
+  },
+  "keywords": [
+    "async",
+    "asynchronous",
+    "controller",
+    "operations",
+    "execution",
+    "es5"
+  ],
+  "author": "Vladislav Chursin <wwtchrsin@yandex.ru>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wwtchrsin/AsyncCtrl/issues"
+  },
+  "homepage": "https://github.com/wwtchrsin/AsyncCtrl#readme"
+}

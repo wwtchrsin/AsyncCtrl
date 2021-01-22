@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>AsyncCtrl Example</title>
+<style type="text/css">
+html, body {
+padding: 0;
+margin: 0;
+width: 100%;
+height: 100;
+background-color: #222;
+font-family: monospace;
+color: #ccc;
+}
+#result {
+position: fixed;
+top: 50%;
+width: 100%;
+transform: translateY(-50%);
+text-align: center;
+font-size: 10vmin;
+font-weight: 800;
+}
+#description {
+position: fixed;
+right: 10%;
+top: 10%;
+width: 30%;
+font-size: 2.3vmin;
+}
+</style>
+</head>
+<body>
+    <div id="description">
+        Repeatedly executing a list of tasks
+        each of which may fail. If all the tasks succeed
+        a number from 40 to 42 is displayed
+        otherwise a negative number reflecting
+        the last successful stage is displayed
+    </div>
+    <div id="result">UDF<div>
+    <script type="text/javascript" src="../umd/async-ctrl.min.js"></script>
+    <script type="text/javascript">
+        var generateDelay = function(range, base) { return Math.random() * range + base; };
+        var actions = AsyncCtrl([
+            function(success, failure, value) {
+                setTimeout(function() { success(value + 10); }, generateDelay(2000, 1000));
+                setTimeout(function() { failure(-value); }, generateDelay(4000, 1000));
+            },
+            [function(success, failure, value, scope) {
+                setTimeout(function() {
+                    if ( ++scope.successes$ === 3 ) success(value + 10);
+                }, generateDelay(2000, 1000));
+                setTimeout(function() {
+                    if ( ++scope.failures$ === 3 ) failure(-value);
+                }, generateDelay(4000, 1000));
+            },function(success, failure, value, scope) {
+                setTimeout(function() {
+                    if ( ++scope.successes$ === 3 ) success(value + 11);
+                }, generateDelay(2000, 1000));
+                setTimeout(function() {
+                    if ( ++scope.failures$ === 3 ) failure(-value);
+                }, generateDelay(4000, 1000));
+            },function(success, failure, value, scope) {
+                setTimeout(function() {
+                    if ( ++scope.successes$ === 3 ) success(value + 12);
+                }, generateDelay(2000, 1000));
+                setTimeout(function() {
+                    if ( ++scope.failures$ === 3 ) failure(-value);
+                }, generateDelay(4000, 1000));
+            }],
+            function(success, failure, value) {
+                setTimeout(function() { success(value + 10); }, generateDelay(2000, 1000));
+                setTimeout(function() { failure(-value); }, generateDelay(2000, 1000));
+            },
+        ]);
+        window.addEventListener("DOMContentLoaded", function(ev) {
+            var result = document.getElementById("result");
+            var performActions = function() {
+                var startTime = performance.now();
+                actions(10)
+                    .onSuccess(function(value) {
+                        var execTime = Math.floor(performance.now() - startTime);
+                        result.textContent = "+" + value + " /" + execTime;
+                        performActions();
+                    })
+                    .onFailure(function(value) {
+                        var execTime = Math.floor(performance.now() - startTime);
+                        result.textContent = value + " /" + execTime;
+                        performActions();
+                    });
+            };
+            performActions();
+        });
+    </script>
+</body>
+</html>
